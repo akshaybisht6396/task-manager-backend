@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "*") // 👈 THIS IS THE MAGIC FIX
 @RequiredArgsConstructor
 public class AuthController {
 
