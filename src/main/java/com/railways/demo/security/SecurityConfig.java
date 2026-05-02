@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -23,11 +24,21 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for REST APIs
             .authorizeHttpRequests(auth -> auth
-                // 1. Open access to static frontend files
-                .requestMatchers("/", "/index.html", "/static/**", "/*.html", "/*.css", "/*.js").permitAll()
-                // 2. Open access to signup/login endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-                // Protect all other routes
+                // 1. Explicitly open access to frontend files using exact Ant matching
+                .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/index.html")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/static/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/*.html")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/*.css")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/*.js")).permitAll()
+                
+                // 2. IMPORTANT: Add Error endpoint permission to prevent 403 on routing/exceptions
+                .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
+                
+                // 3. Open access to auth endpoints
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                
+                // Protect everything else
                 .anyRequest().authenticated()
             );
             
