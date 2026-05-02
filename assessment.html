@@ -85,12 +85,12 @@
   </main>
 
   <script>
-    // ⚠️ REPLACE THIS WITH YOUR LIVE RAILWAY LINK
+    // ⚠️ REPLACE THIS WITH YOUR LIVE RAILWAY LINK IF NEEDED
     const BACKEND_URL = "https://task-manager-backend-production-16de.up.railway.app";
+    
     let jwtToken = localStorage.getItem("jwtToken") || null;
     let userRole = localStorage.getItem("userRole") || "ROLE_MEMBER";
 
-    // Startup configuration checks
     window.onload = function() {
       if (jwtToken) {
         showDashboard();
@@ -102,7 +102,6 @@
       document.getElementById("dashboardSection").classList.remove("hidden");
       document.getElementById("logoutBtn").classList.remove("hidden");
 
-      // Only show the Create Task form if the user is an Admin
       if (userRole === "ROLE_ADMIN") {
         document.getElementById("adminTaskPanel").classList.remove("hidden");
       }
@@ -114,7 +113,6 @@
       window.location.reload();
     }
 
-    // AUTH: SIGNUP
     async function handleSignup(event) {
       event.preventDefault();
       const msg = document.getElementById("signupMsg");
@@ -148,7 +146,6 @@
       }
     }
 
-    // AUTH: LOGIN
     async function handleLogin(event) {
       event.preventDefault();
       const msg = document.getElementById("loginMsg");
@@ -166,7 +163,7 @@
         });
 
         if (response.ok) {
-          const data = await response.json(); // Assumes token and role are returned
+          const data = await response.json();
           jwtToken = data.token;
           userRole = data.role || "ROLE_MEMBER";
 
@@ -186,7 +183,6 @@
       }
     }
 
-    // TASKS: FETCH ALL
     async function fetchTasks() {
       const taskList = document.getElementById("taskList");
       taskList.innerHTML = `<li class="text-slate-400 py-4">Fetching current tasks...</li>`;
@@ -228,7 +224,6 @@
       }
     }
 
-    // TASKS: CREATE (ADMINS ONLY)
     async function handleCreateTask(event) {
       event.preventDefault();
       const msg = document.getElementById("taskMsg");
