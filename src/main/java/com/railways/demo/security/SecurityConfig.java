@@ -23,8 +23,12 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for REST APIs
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Open access to signup/login
-                .anyRequest().authenticated() // Protect all other routes
+                // 1. Open access to static frontend files
+                .requestMatchers("/", "/index.html", "/static/**", "/*.html", "/*.css", "/*.js").permitAll()
+                // 2. Open access to signup/login endpoints
+                .requestMatchers("/api/auth/**").permitAll()
+                // Protect all other routes
+                .anyRequest().authenticated()
             );
             
         return http.build();
